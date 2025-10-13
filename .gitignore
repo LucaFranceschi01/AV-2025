@@ -1,1 +1,6 @@
 .venv
+class-notebooks/
+tmp/
+
+**.csv
+**.png
