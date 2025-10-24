@@ -1,10 +1,17 @@
 import pickle
 import pandas as pd
 import streamlit as st
+import time
 
+@st.cache_data
+def load_data(data_path: str):
+    time.sleep(1) # to check if cached correctly
+    data = pd.read_csv(data_path)
+    return data
 
 @st.cache_resource # should work better than cache_data since the stored daya might be somewhat complex
 def load_model(model_path: str):
+    time.sleep(1) # to check if cached correctly
     with open(model_path, 'rb') as file:
         data = pickle.load(file)
     return data

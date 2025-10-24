@@ -8,7 +8,7 @@
 # ------------------------------------------------------------
 
 import streamlit as st
-from utils import *
+from utils import load_model, predict_sample_data
 import numpy as np
 
 model_data = load_model('loan_app_artifacts.pkl')
