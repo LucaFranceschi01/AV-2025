@@ -1,6 +1,7 @@
 .venv
 class-notebooks/
 tmp/
+**/__pycache__
 
 **.csv
 **.png
