@@ -30,6 +30,8 @@ X_test = load_X_test()
 if model is None:
     exit(1)
 
+idx = st.slider('Choose an index from X (row) to explain locally', min_value=0, max_value=len(X_test)-1, value=0)
+
 if st.button('Compute SHAP values (this may take a moment)'):
     with st.spinner('Computing explainer...'):
         explainer, shap_values = get_shap_explainer(model, X_test)
@@ -69,7 +71,6 @@ if st.button('Compute SHAP values (this may take a moment)'):
 
         st.markdown('---')
         st.subheader('Local explainability')
-        idx = st.number_input('Choose an index from X (row) to explain locally', min_value=0, max_value=len(X_test)-1, value=0)
         sv = shap_values[idx]
         st.write('Base value (average prediction):', sv.base_values)
         st.write('Model prediction for row:', model.predict(X_test.iloc[[idx]])[0])
