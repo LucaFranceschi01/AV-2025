@@ -5,12 +5,43 @@ import shap
 import numpy as np
 import time
 
+# from https://plotly.com/python/colorscales/
+my_colorscale = [[0.0, "rgb(49,54,149)"],
+        [0.1111111111111111, "rgb(69,117,180)"],
+        [0.2222222222222222, "rgb(116,173,209)"],
+        [0.3333333333333333, "rgb(171,217,233)"],
+        [0.4444444444444444, "rgb(224,243,248)"],
+        [0.5555555555555556, "rgb(254,224,144)"],
+        [0.6666666666666666, "rgb(253,174,97)"],
+        [0.7777777777777778, "rgb(244,109,67)"],
+        [0.8888888888888888, "rgb(215,48,39)"],
+        [1.0, "rgb(165,0,38)"]]
+
+@st.cache_resource
+def shorten_categories(categories, cutoff):
+    categorical_map = {}
+    for i in range(len(categories)):
+        if categories.values[i] >= cutoff:
+            categorical_map[categories.index[i]] = categories.index[i]
+        else:
+            categorical_map[categories.index[i]] = 'Other'
+    return categorical_map
+
 @st.cache_data
 def load_data(path='car_ad_display.csv'):
     time.sleep(2)
+    
     df = pd.read_csv(path, encoding='ISO-8859-1', sep=';')
+
     if 'Unnamed: 0' in df.columns:
         df = df.drop(columns='Unnamed: 0')
+
+    car_map = shorten_categories(df.car.value_counts(), 10)
+    df['car'] = df['car'].map(car_map)
+
+    model_map = shorten_categories(df.model.value_counts(), 10)
+    df['model'] = df['model'].map(model_map)
+
     return df
 
 @st.cache_data
