@@ -3,9 +3,11 @@ import pandas as pd
 import pickle
 import shap
 import numpy as np
+import time
 
 @st.cache_data
 def load_data(path='car_ad_display.csv'):
+    time.sleep(2)
     df = pd.read_csv(path, encoding='ISO-8859-1', sep=';')
     if 'Unnamed: 0' in df.columns:
         df = df.drop(columns='Unnamed: 0')
@@ -46,7 +48,7 @@ def get_shap_explainer(model, X_sample):
 
 @st.cache_data
 def predict_sample_data(_data, X_sample):
-    
+
     model = _data["model"]
     le_car = _data["le_car"]
     le_body = _data["le_body"]

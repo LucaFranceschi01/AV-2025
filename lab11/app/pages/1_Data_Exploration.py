@@ -1,34 +1,18 @@
-# streamlit_car_price_app.py
-# Streamlit app for: Data Exploration | Predictive Model | Explainability
-# Put this file in the same folder as 'car_ad_display.csv' and the saved model 'models/model.pkl'
-
+import time
 import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pickle
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
-import lightgbm as lgb
-from sklearn.metrics import mean_squared_error, r2_score
-import shap
-import io
 
 from utils import *
 
-sns.set_palette('icefire')
-
-st.set_page_config(page_title='Car Price Recommender', layout='wide')
+st.set_page_config(page_title='Data Exploration', layout='wide')
 
 # ---------------------------------------------------------------------
 # App UI
-st.title('🚗 Car Price Recommender — Exploratory Analysis + Model + Explainability')
-
-# Sidebar for navigation
-page = st.sidebar.selectbox('Choose page', ['Data Exploration', 'Model & Prediction', 'Explainability'])
+st.title('🔍 Data Exploration')
+st.write('Dataset exploration and key insights')
 
 # Load raw data
 with st.spinner('Loading data...'):
@@ -36,7 +20,7 @@ with st.spinner('Loading data...'):
 
 st.header('Data Exploration')
 st.markdown('Quick preview of raw data:')
-st.dataframe(df.head(10))
+st.dataframe(df.head())
 
 st.subheader('Basic info')
 st.write('Rows:', df.shape[0], 'Columns:', df.shape[1])

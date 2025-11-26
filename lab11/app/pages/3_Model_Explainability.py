@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 
 from utils import *
 
-st.header('Explainability')
-st.markdown('Global and local explainability using SHAP')
+st.set_page_config(page_title='Model Explainability', layout='wide')
+
+st.title('📊 Model Explainability')
+st.write('Global and local explainability using SHAP')
 
 # Load model and encoders
 try:
@@ -17,7 +19,7 @@ try:
         le_drive = data['le_drive']
     else:
         st.write('The model was not loaded correctly!!')
-    
+
     st.success('Loaded saved model and encoders')
 except Exception as e:
     st.error('Could not load model.pkl from models/. You can train a model on the Model page first. Error: '+ str(e))

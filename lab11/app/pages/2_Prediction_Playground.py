@@ -2,11 +2,13 @@ import streamlit as st
 import numpy as np
 from utils import *
 
+st.set_page_config(page_title='Price Prediction', layout='wide')
+
+st.title('🚗 Price Prediction')
+st.write('Provide attributes for a sample car to get a predicted price.')
+
 model_loaded = load_model()
 df = load_data()
-
-st.markdown('# Prediction playground')
-st.write('Provide attributes for a sample car to get a predicted price.')
 
 col_sliders, col_selects = st.columns(2)
 
