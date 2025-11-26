@@ -22,16 +22,16 @@ with col1:
     st.markdown("### 🔍 Data Exploration")
     st.markdown("Explore the dataset, understand distributions, correlations, and gain insights.")
     if st.button("Go to Data Exploration"):
-        st.switch_page("pages/Data_Exploration.py")
+        st.switch_page("pages/1_Data_Exploration.py")
 
 with col2:
     st.markdown("### 🚗 Price Prediction")
     st.markdown("Get a suggested selling price based on your vehicle's characteristics.")
     if st.button("Go to Prediction"):
-        st.switch_page("pages/Prediction_Playground.py")
+        st.switch_page("pages/2_Prediction_Playground.py")
 
 with col3:
     st.markdown("### 📊 Model Explainability")
     st.markdown("Understand how the model makes decisions using interpretability tools.")
     if st.button("Go to Explainability"):
-        st.switch_page("pages/Model_Explainability.py")
+        st.switch_page("pages/3_Model_Explainability.py")

@@ -46,7 +46,14 @@ def load_data(path='car_ad_display.csv'):
 
 @st.cache_data
 def load_data_clean(path='car_ad_display_clean.csv'):
-    df = pd.read_csv(path, encoding='ISO-8859-1', sep=';')
+    df = pd.read_csv(path, encoding='ISO-8859-1', sep=',')
+    if 'Unnamed: 0' in df.columns:
+        df = df.drop(columns='Unnamed: 0')
+    return df
+
+@st.cache_data
+def load_X_test(path='X_test.csv'):
+    df = pd.read_csv(path, encoding='ISO-8859-1', sep=',')
     if 'Unnamed: 0' in df.columns:
         df = df.drop(columns='Unnamed: 0')
     return df
@@ -68,12 +75,12 @@ def load_model(path='models/model.pkl'):
     return data
 
 @st.cache_resource
-def get_shap_explainer(model, X_sample):
+def get_shap_explainer(_model, X_sample):
     # Using TreeExplainer if possible for speed; fallback to general Explainer
     try:
-        explainer = shap.Explainer(model)
+        explainer = shap.Explainer(_model)
     except Exception:
-        explainer = shap.Explainer(model)
+        explainer = shap.Explainer(_model)
     shap_values = explainer(X_sample)
     return explainer, shap_values
 

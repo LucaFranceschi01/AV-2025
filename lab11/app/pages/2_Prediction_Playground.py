@@ -30,4 +30,12 @@ if st.button('Predict'):
     else:
         X_sample = np.array([[car_in, body_in, mileage_in, engV_in, engType_in, registration_in, year_in, drive_in]], dtype=object)
 
-        st.write(predict_sample_data(model_loaded, X_sample))
+        # st.write(f'${predict_sample_data(model_loaded, X_sample):,.2f}')
+        st.markdown(
+            f"""
+            <div style='text-align: center; font-size: 32px; font-weight: bold;'>
+                💰 Predicted car value: ${predict_sample_data(model_loaded, X_sample):,.2f}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
