@@ -68,9 +68,55 @@ fig_heatmap.update_layout(
 
 st.plotly_chart(fig_heatmap, use_container_width=True)
 
+st.divider()
+st.header("2. Predictive Feature Distributions")
+st.write("Comparing the distributions of the most relevant features between the two classes.")
+
+# Features selected based on correlation and financial significance
+relevant_features = [
+    'Net Income to Total Assets',
+    'Operating Gross Margin',
+    'Total debt/Total net worth',
+    'Current Ratio'
+]
+
+col1, col2 = st.columns(2)
+df_sample_cp = df_sample.copy()
+
+df_sample_cp['Total debt/Total net worth'] = np.log1p(df_sample_cp['Total debt/Total net worth'])
+df_sample_cp['Current Ratio'] = np.log1p(df_sample_cp['Current Ratio'])
+
+for i, feature in enumerate(relevant_features):
+    
+    # --- HISTOGRAM WITH DENSITY OVERLAY ---
+    fig_hist = px.histogram(
+        df_sample_cp, 
+        x=feature, 
+        color='Bankrupt?',
+        marginal="box", # Adds a box plot on top for outlier context
+        histnorm='probability density', # Normalizes bars so the area is 1 for each class
+        opacity=0.6,
+        barmode='overlay',
+        title=f'Density Distribution of {feature}'
+    )
+    
+    # Customize layout
+    fig_hist.update_layout(
+        yaxis_title="Probability Density",
+        legend_title="Bankrupt?"
+    )
+
+    # Place plots in columns
+    if i % 2 == 0:
+        with col1:
+            st.plotly_chart(fig_hist, use_container_width=True)
+    else:
+        with col2:
+            st.plotly_chart(fig_hist, use_container_width=True)
+
 # --- MODEL COMPARISON SECTION ---
 st.divider()
-st.header("2. Model Comparison (ROC Curves)")
+st.header("3. Model Comparison (ROC Curves)")
 
 st.markdown("""
 We evaluated Random Forest, SVM, Logistic Regression, XGBoost, and simplified XGBoost with the top 20 features.
