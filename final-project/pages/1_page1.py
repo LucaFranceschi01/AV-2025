@@ -8,7 +8,6 @@ import pickle
 
 st.set_page_config(page_title="Overview & Comparison", page_icon="📊", layout="wide")
 
-# --- LOAD ASSETS ---
 @st.cache_data
 def load_comparison_data():
     y_test = np.load('assets/y_test.npy')
@@ -36,18 +35,45 @@ with col2:
     # Calculate corr for sample to be fast
     corr = df_sample.corr(numeric_only=True)
     # Select correlation with target
-    target_corr = corr['Bankrupt?'].sort_values(ascending=False).head(10)
+    target_corr = corr['Bankrupt?'].sort_values(ascending=False).head(10).drop('Bankrupt?')
     fig_corr = px.bar(x=target_corr.values, y=target_corr.index, orientation='h',
                       title="Top Features Correlated with Bankruptcy",
                       labels={'x': 'Correlation', 'y': 'Feature'})
     st.plotly_chart(fig_corr, use_container_width=True)
+
+st.subheader("Full Feature Correlation Heatmap")
+st.markdown("""
+A visual representation of the correlation between the top 15 most correlated features.
+""")
+
+N_FEATURES = 15
+top_features = corr['Bankrupt?'].abs().sort_values(ascending=False).head(N_FEATURES + 1).index.tolist()
+
+corr_top = df_sample[top_features].corr(numeric_only=True).round(2)
+
+fig_heatmap = px.imshow(
+    corr_top,
+    text_auto=True,  # Annotate with the correlation value
+    aspect="auto",
+    color_continuous_scale=px.colors.diverging.RdBu,
+    color_continuous_midpoint=0,
+    title="Correlation Heatmap of Top 15 Features"
+)
+
+fig_heatmap.update_xaxes(side="bottom")
+fig_heatmap.update_layout(
+    height=800, # Set a fixed height for better visibility
+    margin=dict(l=50, r=50, b=100, t=100) # Increase margins for labels
+)
+
+st.plotly_chart(fig_heatmap, use_container_width=True)
 
 # --- MODEL COMPARISON SECTION ---
 st.divider()
 st.header("2. Model Comparison (ROC Curves)")
 
 st.markdown("""
-We evaluated Random Forest, SVM, Logistic Regression, and XGBoost. 
+We evaluated Random Forest, SVM, Logistic Regression, XGBoost, and simplified XGBoost with the top 20 features.
 The plot below compares their **True Positive Rate** vs. **False Positive Rate**.
 """)
 
@@ -58,8 +84,7 @@ fig_roc.add_shape(
 )
 
 for model_name, y_proba in probas.items():
-    # Handle simplified xgboost length mismatch if any, usually handled in generation
-    # Assuming lengths match y_test
+
     if len(y_proba) == len(y_test):
         fpr, tpr, _ = roc_curve(y_test, y_proba)
         auc = roc_auc_score(y_test, y_proba)
@@ -73,9 +98,12 @@ fig_roc.update_layout(
     title="ROC Curve Comparison",
     xaxis_title="False Positive Rate",
     yaxis_title="True Positive Rate",
-    width=900, height=600
+    width=900, height=800
 )
 
-st.plotly_chart(fig_roc, use_container_width=True)
+left, middle, right = st.columns((1, 5, 1))
+with middle:
+    st.plotly_chart(fig_roc, use_container_width=True)
+    
 
-st.success("✅ **Decision:** Logistic Regression chosen for deployment due to high AUC (comparable to XGBoost) and superior interpretability.")
+st.success("**Decision:** Logistic Regression chosen for deployment due to high AUC (comparable to XGBoost) and similar interpretability.")

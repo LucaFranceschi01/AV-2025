@@ -8,7 +8,6 @@ import plotly.express as px
 
 st.set_page_config(page_title="Explainability", page_icon="🤖", layout="wide")
 
-# --- LOAD DATA ---
 @st.cache_resource
 def load_resources():
     with open('assets/logreg_model.pkl', 'rb') as f:
@@ -18,16 +17,15 @@ def load_resources():
 
 model, X_test = load_resources()
 
-# --- CALCULATE SHAP (Cached) ---
 @st.cache_data
 def get_shap_values(_model, _X_test):
-    # Use LinearExplainer for LogReg
+    # use LinearExplainer for LogReg
     explainer = shap.LinearExplainer(_model, _X_test, model_output='raw')
     shap_values = explainer.shap_values(_X_test)
     
     # Check if list (binary class) or array
     if isinstance(shap_values, list):
-        shap_values = shap_values[1] # Positive class
+        shap_values = shap_values[1]
         
     return explainer, shap_values
 
@@ -38,7 +36,7 @@ st.title("Explainable AI (XAI) Dashboard")
 st.markdown("We use **SHAP (SHapley Additive exPlanations)** to understand feature contributions.")
 
 # --- TABBED VIEW ---
-tab1, tab2, tab3 = st.tabs(["Global Importance", "S-Curve Analysis", "Local Prediction (Waterfall)"])
+tab1, tab2, tab3 = st.tabs(["Global Importance", "SHAP Values and eq. probabilities", "Local Prediction (Waterfall)"])
 
 shap_values = np.array(shap_values)
 
@@ -53,13 +51,13 @@ with tab1:
     df_import = pd.DataFrame({
         'Feature': feature_names,
         'Mean |SHAP|': mean_abs_shap
-    }).sort_values(by='Mean |SHAP|', ascending=True).tail(20) # Top 20
+    }).sort_values(by='Mean |SHAP|', ascending=True).tail(20)
     
     fig_bar = px.bar(df_import, x='Mean |SHAP|', y='Feature', orientation='h',
                      title="Top 20 Features by Mean Absolute SHAP Value", height=600)
     st.plotly_chart(fig_bar, use_container_width=True)
 
-# --- TAB 2: Logit vs Probability (S-Curve) ---
+# --- TAB 2: Logit vs Probability ---
 with tab2:
     st.subheader("Relationship between SHAP Logits and Probability")
     

@@ -8,7 +8,6 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 st.set_page_config(page_title="Model Performance", page_icon="📈", layout="wide")
 
-# --- LOAD ASSETS ---
 @st.cache_resource
 def load_logreg_model():
     with open('assets/logreg_model.pkl', 'rb') as f:
@@ -37,28 +36,14 @@ with col1:
     
     # 1. Calculate raw confusion matrix
     cm_raw = confusion_matrix(y_test, y_pred)
-    
-    # 2. Normalize by Predicted Class (normalize='pred')
-    # Sum of each column is 1.0 (True Positives / All Predicted Positives, etc.)
-    
-    # The sum of each column (Predicted classes)
     col_sums = cm_raw.sum(axis=0, keepdims=True)
 
-    # Avoid division by zero
     col_sums[col_sums == 0] = 1 
-    
-    # Normalized matrix
     cm_normalized = cm_raw / col_sums
     
     # --- PLOTLY SETUP ---
     x = ['Predicted 0', 'Predicted 1']
     y = ['Actual 1', 'Actual 0'] # Reversed for standard layout match
-
-    # z should hold the normalized values (0 to 1)
-    # z[0][0] = CM[1][0] (False Negatives - Normalized)
-    # z[0][1] = CM[1][1] (True Positives - Normalized)
-    # z[1][0] = CM[0][0] (True Negatives - Normalized)
-    # z[1][1] = CM[0][1] (False Positives - Normalized)
     
     # Note: We reverse the row order for Plotly's standard heatmap convention (y=Actual 1 top)
     z = [[cm_normalized[1][0], cm_normalized[1][1]], 

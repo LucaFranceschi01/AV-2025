@@ -5,7 +5,7 @@ This application's UI is largely programmed by gemini. The logic, data processin
 import streamlit as st
 
 st.set_page_config(
-    page_title="Bankruptcy Prediction AI",
+    page_title="Bankruptcy Prediction",
     page_icon="💰",
     layout="wide"
 )
@@ -13,7 +13,7 @@ st.set_page_config(
 st.title("💰 Corporate Bankruptcy Prediction System")
 
 st.markdown("""
-### Welcome to the AI Model Dashboard
+### Welcome to the Bankrupcy Prediction Dashboard
 
 This application analyzes financial data to predict potential bankruptcy. 
 
@@ -23,10 +23,7 @@ This application analyzes financial data to predict potential bankruptcy.
 3. **Explainability (XAI):** Understanding *why* the model makes specific decisions using SHAP.
 
 **Why Logistic Regression?**
-While XGBoost offered marginally higher accuracy, we selected **Logistic Regression** for production because:
-* **Interpretability:** It provides linear coefficients that are easy for financial auditors to validate.
-* **Calibration:** It offers well-calibrated probabilities.
-* **Efficiency:** Extremely fast inference time.
+Even though XGBoost has slightly clearer explainability, the improved accuracy and speed of Logistic Regression has won this battle.
 """)
 
 st.info("Select a page from the sidebar to begin.")
