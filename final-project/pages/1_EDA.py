@@ -22,11 +22,13 @@ y_test, df_sample, probas = load_comparison_data()
 st.header("1. Exploratory Data Analysis (Sample)")
 st.write("A high-level look at the data distribution and correlations.")
 
+st.write(df_sample.head())
+
 col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Target Distribution")
-    fig_hist = px.histogram(df_sample, x="Bankrupt?", color="Bankrupt?", 
+    fig_hist = px.histogram(df_sample, x="Bankrupt?", color="Bankrupt?",
                             title="Bankruptcy Distribution (Imbalanced Data)")
     st.plotly_chart(fig_hist, use_container_width=True)
 
@@ -87,11 +89,11 @@ df_sample_cp['Total debt/Total net worth'] = np.log1p(df_sample_cp['Total debt/T
 df_sample_cp['Current Ratio'] = np.log1p(df_sample_cp['Current Ratio'])
 
 for i, feature in enumerate(relevant_features):
-    
+
     # --- HISTOGRAM WITH DENSITY OVERLAY ---
     fig_hist = px.histogram(
-        df_sample_cp, 
-        x=feature, 
+        df_sample_cp,
+        x=feature,
         color='Bankrupt?',
         marginal="box", # Adds a box plot on top for outlier context
         histnorm='probability density', # Normalizes bars so the area is 1 for each class
@@ -99,7 +101,7 @@ for i, feature in enumerate(relevant_features):
         barmode='overlay',
         title=f'Density Distribution of {feature}'
     )
-    
+
     # Customize layout
     fig_hist.update_layout(
         yaxis_title="Probability Density",
@@ -134,9 +136,9 @@ for model_name, y_proba in probas.items():
     if len(y_proba) == len(y_test):
         fpr, tpr, _ = roc_curve(y_test, y_proba)
         auc = roc_auc_score(y_test, y_proba)
-        
+
         fig_roc.add_trace(go.Scatter(
-            x=fpr, y=tpr, mode='lines', 
+            x=fpr, y=tpr, mode='lines',
             name=f'{model_name} (AUC={auc:.3f})'
         ))
 
@@ -150,6 +152,6 @@ fig_roc.update_layout(
 left, middle, right = st.columns((1, 5, 1))
 with middle:
     st.plotly_chart(fig_roc, use_container_width=True)
-    
+
 
 st.success("**Decision:** Logistic Regression chosen for deployment due to high AUC (comparable to XGBoost) and similar interpretability.")
